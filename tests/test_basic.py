@@ -1,18 +1,20 @@
-import pytest
-import project  # on import will print something from __init__ file
+import project.graph as g
+import tempfile
+import pydot
 
 
-def setup_module(module):
-    print("basic setup module")
+def test_can_get_info_by_name_wc():
+    info = g.get_graph_info_from_name("wc")
+    assert info == (332, 269, ["d", "a"])
 
 
-def teardown_module(module):
-    print("basic teardown module")
+def test_can_get_info_by_name_ls():
+    info = g.get_graph_info_from_name("ls")
+    assert info == (1687, 1453, ["d", "a"])
 
 
-def test_1():
-    assert 1 + 1 == 2
-
-
-def test_2():
-    assert "1" + "1" == "11"
+def test_can_create_2_cycle_graph_and_save():
+    with tempfile.NamedTemporaryFile(delete=True) as f:
+        g.create_2_cycle_graph_and_save(2, 3, ["x", "y"], f.name)
+        x = pydot.graph_from_dot_file(f.name)
+        assert x is not None
