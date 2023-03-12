@@ -3,11 +3,18 @@ from pyformlang.finite_automaton import NondeterministicFiniteAutomaton
 
 
 def build_from_regex(re):
+    """
+    Функция строит минимального ДКА по заданному регулярному выражению `re` (`re` в строковом формате).
+    """
     return Regex(re).to_epsilon_nfa().minimize()
 
 
 def build_from_graph(graph, start_states=None, final_states=None):
-
+    """
+    Функция строит недетерминированный конечный автомат по графу
+    в формате `MultiDiGraph`. Принимает массив стартовых `start_states` вершин
+    и массив конечных `final_states` вершин
+    """
     if start_states is None:
         start_states = graph.nodes
 
