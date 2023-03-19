@@ -52,3 +52,4 @@ jobs:
           python -m pytest tests/test_basic.py
           python -m pytest tests/test_task2.py
           python -m pytest tests/test_task3.py
+          python -m pytest tests/test_task4.py
