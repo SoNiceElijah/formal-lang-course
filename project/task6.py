@@ -13,11 +13,7 @@ class TaskCFG(CFG):
         if self._weak_normal_from is not None:
             return self._weak_normal_from
 
-        x = (
-            self.remove_useless_symbols()
-            .eliminate_unit_productions()
-            .remove_useless_symbols()
-        )
+        x = self.eliminate_unit_productions().remove_useless_symbols()
         new_productions = x._get_productions_with_only_single_terminals()
         new_productions = x._decompose_productions(new_productions)
 
