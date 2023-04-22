@@ -3,6 +3,7 @@ from pyformlang.regular_expression import Regex
 from pyformlang.finite_automaton import EpsilonNFA
 from scipy.sparse import dok_matrix
 from typing import Dict, Callable
+import numpy as np
 
 
 class TaskECFG:
