@@ -1,6 +1,7 @@
 from pyformlang.cfg import CFG, Variable, Terminal
 from pyformlang.regular_expression import Regex
 from pyformlang.finite_automaton import EpsilonNFA
+from scipy.sparse import dok_matrix
 from typing import Dict, Callable
 
 
@@ -107,3 +108,31 @@ class TaskRFA:
     @property
     def automatus(self):
         return self._automatus
+
+    def get_matrix(self):
+        """
+        Возвращает матричное представление данного автомата
+        """
+
+        def convert(automatus: EpsilonNFA):
+            mapper = {}
+            n = 0
+            for idx, state in enumerate(automatus.states):
+                mapper[state] = idx
+                n += 1
+            edges_matrixes = {}
+            for a, e, b in automatus:
+                if e not in edges_matrixes:
+                    edges_matrixes[e] = dok_matrix((n, n), dtype=np.bool_)
+                edges_matrixes[e][mapper[a], mapper[b]] = np.bool_(True)
+
+            return (
+                edges_matrixes,
+                [mapper[x] for x in automatus.start_states],
+                [mapper[x] for x in automatus.states],
+            )
+
+        a = {}
+        for v, r in self._automatus.items():
+            a[v] = convert(r)
+        return a
