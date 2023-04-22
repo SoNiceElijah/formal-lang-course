@@ -55,3 +55,4 @@ jobs:
           python -m pytest tests/test_task4.py
           python -m pytest tests/test_task6.py
           python -m pytest tests/test_task7.py
+          python -m pytest tests/test_task8.py
