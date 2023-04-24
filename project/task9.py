@@ -1,66 +1,72 @@
-from typing import List
-from pyformlang.cfg import Variable
-from project.task6 import TaskCFG
+from typing import Dict, List
 from project.graph import create_graph_from_name
+from project.task6 import TaskCFG
 from networkx import MultiDiGraph
+from scipy.sparse import dok_matrix
+import numpy as np
 import cfpq_data
 
 
-def hellings_algo(grammar: TaskCFG, graph: MultiDiGraph):
-    """
-    Выполняет алгоритм Хеллингса
-    """
+def matrix_algo(grammar: TaskCFG, graph: MultiDiGraph):
 
     grammar = grammar.to_weak_normal_form()
-    edges = set()
 
-    for production in grammar.productions:
-        if len(production.body) == 0:  # eps
-            for n in graph.nodes:
-                edges.add((n, production.head.to_text(), n))
-        if len(production.body) == 1:  # terminal
+    n = len(graph.nodes)
+
+    mapper = {}
+    unmapper = {}
+
+    for i, v in enumerate(graph.nodes):
+        mapper[v] = i
+        unmapper[i] = v
+
+    ms = {}
+    for g in grammar.productions:
+        m = dok_matrix((n, n), dtype=np.bool_)
+
+        if len(g.body) == 0:
+            for i in range(n):
+                m[i, i] = True
+        elif len(g.body) == 1:
             for u, v, e in graph.edges.data(data=True):
-                if e["label"] == production.body[0].to_text():
-                    edges.add((u, production.head.to_text(), v))
+                if e["label"] == g.body[0].to_text():
+                    m[mapper[u], mapper[v]] = True
 
-    def find_non_terminal(l, r):
-        for p in grammar.productions:
-            if (
-                len(p.body) == 2
-                and p.body[0] == Variable(l)
-                and p.body[1] == Variable(r)
-            ):
-                return p.head.to_text()
-        return None
+        key = g.head.to_text()
+        if key in ms:
+            ms[key] += m
+        else:
+            ms[key] = m
 
-    queue = list(edges)
-    while len(queue) > 0:
-        s1, left, t1 = queue.pop(0)
+    changed = True
+    while changed:
+        changed = False
 
-        should_add = set()
-        for s2, right, t2 in edges:
-            if t1 == s2:
-                l = find_non_terminal(left, right)
-                if l is not None:
-                    tripple = (s1, l, t2)
-                    if tripple not in edges:
-                        queue.append(tripple)
-                        should_add.add(tripple)
-            if t2 == s1:
-                l = find_non_terminal(right, left)
-                if l is not None:
-                    tripple = (s2, l, t1)
-                    if tripple not in edges:
-                        queue.append(tripple)
-                        should_add.add(tripple)
+        for g in grammar.productions:
 
-        for e in should_add:
-            edges.add(e)
+            c = g.head.to_text()
+            prev_ones = ms[c].count_nonzero()
 
-    return edges
+            if len(g.body) == 2:
+
+                left = g.body[0].to_text()
+                right = g.body[1].to_text()
+
+                ms[c] += ms[left] @ ms[right]
+
+                if prev_ones != ms[c].count_nonzero():
+                    changed = True
+
+    answer = set()
+    for key, val in ms.items():
+        xs, ys = val.nonzero()
+        for i, j in zip(xs, ys):
+            answer.add((unmapper[i], key, unmapper[j]))
+
+    return answer
 
 
-class HellingsAlgoBuilder:
+class MatrixAlgoBuilder:
     """
     Собирает алгоритм с заданной грамматикой и графом
     """
@@ -94,7 +100,7 @@ class HellingsAlgoBuilder:
         if self._graph is None:
             raise RuntimeError("graph is not specified!")
 
-        return lambda: hellings_algo(self._grammar, self._graph)
+        return lambda: matrix_algo(self._grammar, self._graph)
 
     def run(self, starts: List, finals: List, nonterminal: str):
 
@@ -115,7 +121,7 @@ def make_query(
     Функция решает задачу достижимости для заданного набора стартовых и финальных вершин, и заданного нетерминала.
     """
 
-    tripples = hellings_algo(grammar, graph)
+    tripples = matrix_algo(grammar, graph)
 
     answer = set()
     for s, l, t in tripples:
