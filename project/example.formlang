@@ -1,0 +1,56 @@
+# Это комментарий
+
+g_ is load "wine"; # загружаем
+
+# устанавливаем начальные и конечные вершины
+g is g_ get vertices ||> ({0..100} ||: g_);
+
+l1 is "l1" | "l2";
+q1 is ("type" | l1)*;
+q2 is "sub_class_of" . l1;
+
+res1 is g & q1;
+res2 is g & q2;
+
+show res1;
+
+s is g get starts;
+
+vertices1 is res1 get edges
+    map / x -> x['u_g'] /
+    filter / x -> x in s /
+;
+
+vertices2 is res2 get edges
+    map / x -> x['u_g'] /
+    filter / x -> x in s /
+;
+
+vertices_ is vertices1 & vertices2;
+show vertices_;
+
+#
+# Для сравнения вот оригинальный пример:
+#
+# let g' = load graph "wine"
+#
+# let g = set start of (set finals of g' to (vertices of g')) to {0..100}
+#
+# let l1 = "l1" | "l2"
+#
+# let q1 = ("type" | l1)*
+# let q2 = "sub_class_of" l1
+#
+# let res1 = g & q1
+# let res2 = g & q2
+#
+# print res1
+#
+# let s = start set of g
+#
+# let vertices1 = filter (fun v -> v in s) (map (fun ((u_g,u_q1),l,(v_g,v_q1)) -> u_g) (get edges of res1))
+# let vertices2 = filter (fun v -> v in s) (map (fun ((u_g,u_q2),l,(v_g,v_q2)) -> u_g) (get edges of res2))
+# let vertices = vertices1 & vertices2
+#
+# print vertices
+#
