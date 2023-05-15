@@ -110,6 +110,9 @@ class DotFormLangVisitor(FormLangVisitor):
 
 
 def containsString(s: str):
+    """
+    Проверяет, принадлежит ли строка заданной грамматике, или нет
+    """
 
     lexems = FormLangLexer(InputStream(s))
     lexems.removeErrorListeners()
@@ -122,6 +125,9 @@ def containsString(s: str):
 
 
 def generateDot(s: str):
+    """
+    Генерирует DOT файл с описанием дерева разбора для данного входа
+    """
 
     lexems = FormLangLexer(InputStream(s))
     parser = FormLangParser(CommonTokenStream(lexems))
@@ -134,7 +140,3 @@ def generateDot(s: str):
     dot = visitor.result()
 
     return dot.to_string()
-
-
-if __name__ == "__main__":
-    print(containsString("x is 3;"))
