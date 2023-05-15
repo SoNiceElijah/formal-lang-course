@@ -111,3 +111,9 @@
 - Вадим Абзалов [@vdshk](https://github.com/vdshk)
 - Рустам Азимов [@rustam-azimov](https://github.com/rustam-azimov)
 - Екатерина Шеметова [@katyacyfra](https://github.com/katyacyfra)
+
+## Команда для генерации antlr файлов
+
+```
+cd project && antlr4 -Dlanguage=Python3 FormLang.g4 -visitor -o antlr_parser
+```

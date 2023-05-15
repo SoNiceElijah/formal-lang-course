@@ -49,7 +49,7 @@ jobs:
       # Builds project
       - name: "Build project"
         run: |
-          antlr4 -Dlanguage=Python3 project/FormLang.g4 -visitor -o project/antlr_parser
+          cd project && antlr4 -Dlanguage=Python3 FormLang.g4 -visitor -o antlr_parser
 
       # Install pre-commit from .pre-commit-config.yaml
       - name: Run tests
