@@ -1,4 +1,4 @@
-grammar formlang;
+grammar FormLang;
 
 // lexems
 
@@ -26,11 +26,11 @@ stmt: assignment
 print: 'show' expr;
 
 var: IDENTIFIER;
-val: NUMBER
-   | STRING
-   | '{' expr (',' expr)* '}'   // множество
-   | '(' expr ',' expr ')'      // пара
-   | '{' NUMBER '..' NUMBER '}'
+val: NUMBER                     # Number
+   | STRING                     # String
+   | '{' expr (',' expr)* '}'   # Set     // множество
+   | '(' expr ',' expr ')'      # Tuple   // пара
+   | '{' NUMBER '..' NUMBER '}' # Range
    ;
 
 

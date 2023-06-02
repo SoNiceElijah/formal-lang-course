@@ -46,6 +46,11 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip list
 
+      # Builds project
+      - name: "Build project"
+        run: |
+          cd project && antlr4 -Dlanguage=Python3 FormLang.g4 -visitor -o antlr_parser
+
       # Install pre-commit from .pre-commit-config.yaml
       - name: Run tests
         run: |
@@ -57,3 +62,5 @@ jobs:
           python -m pytest tests/test_task7.py
           python -m pytest tests/test_task8.py
           python -m pytest tests/test_task9.py
+          python -m pytest tests/test_task9.py
+          python -m pytest tests/test_parser.py
