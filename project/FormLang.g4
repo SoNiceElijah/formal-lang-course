@@ -29,7 +29,6 @@ var: IDENTIFIER;
 val: NUMBER                     # Number
    | STRING                     # String
    | '{' expr (',' expr)* '}'   # Set     // множество
-   | '(' expr ',' expr ')'      # Tuple   // пара
    | '{' NUMBER '..' NUMBER '}' # Range
    ;
 
@@ -57,10 +56,9 @@ expr: val                             // переменные
     | expr '.' expr                   // конкатенация языков
     | expr '|' expr                   // объединение языков
     | expr '*'                        // замыкание языков (звезда Клини)
-    | expr 'smb' expr                 // единичный переход
     | expr '[' (STRING | NUMBER) ']'  // доступ к полям
     | expr 'in' expr                  // содержится в
     | '(' expr ')'
     ;
 
-lambda: '/' var '->' expr '/';
+lambda: '/' IDENTIFIER '->' expr '/';

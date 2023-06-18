@@ -13,7 +13,6 @@ def test_complicated_vals():
 
     assert containsString("x is {1, 2, 3, 4, 5};")
     assert containsString('x is {"a", "b", "c"};')
-    assert containsString('x is ("a", 3);')
     assert containsString("x is {1 .. 5};")
 
 
@@ -49,7 +48,6 @@ def test_works_with_operators():
     assert containsString("f is x & y;")
     assert containsString("f is x . y;")
     assert containsString("f is x | y;")
-    assert containsString("f is x smb y;")
     assert containsString("f is x in y;")
 
 
@@ -122,33 +120,29 @@ a6 [label=expression];
 a7 [label="var [g]"];
 a6 -- a7;
 a5 -- a6;
-a8 [label=lambda];
-a9 [label="var [x]"];
-a8 -- a9;
-a10 [label=expression];
-a11 [label="val [set -> ]"];
-a12 [label=expression];
-a13 [label="var [x]"];
-a12 -- a13;
+a8 [label="lambda \\x"];
+a9 [label=expression];
+a10 [label="val [set -> ]"];
+a11 [label=expression];
+a12 [label="var [x]"];
 a11 -- a12;
 a10 -- a11;
-a8 -- a10;
+a9 -- a10;
+a8 -- a9;
 a5 -- a8;
 a4 -- a5;
-a14 [label=lambda];
-a15 [label="var [x]"];
+a13 [label="lambda \\x"];
+a14 [label="bin expression [in]"];
+a15 [label=expression];
+a16 [label="var [x]"];
+a15 -- a16;
 a14 -- a15;
-a16 [label="bin expression [in]"];
 a17 [label=expression];
-a18 [label="var [x]"];
+a18 [label="var [a]"];
 a17 -- a18;
-a16 -- a17;
-a19 [label=expression];
-a20 [label="var [a]"];
-a19 -- a20;
-a16 -- a19;
-a14 -- a16;
-a4 -- a14;
+a14 -- a17;
+a13 -- a14;
+a4 -- a13;
 a2 -- a4;
 a1 -- a2;
 a0 -- a1;
