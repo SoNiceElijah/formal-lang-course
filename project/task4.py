@@ -6,6 +6,46 @@ from typing import Union, List
 from networkx import MultiDiGraph
 
 
+def find_reachable_fa(fa: EpsilonNFA):
+    def convert(automatus: EpsilonNFA):
+        mapper = {}
+        n = 0
+        for idx, state in enumerate(automatus.states):
+            mapper[state] = idx
+            n += 1
+        edges_matrixes = {}
+        for a, e, b in automatus:
+            if e not in edges_matrixes:
+                edges_matrixes[e] = dok_matrix((n, n), dtype=np.bool_)
+            edges_matrixes[e][mapper[a], mapper[b]] = np.bool_(True)
+
+        return (
+            edges_matrixes,
+            [mapper[x] for x in automatus.start_states],
+            [mapper[x] for x in automatus.states],
+        )
+
+    m_b, _, fs_b = convert(fa)
+    n = len(fs_b)
+
+    reachable = dok_matrix((n, n), dtype=np.bool_)
+
+    for _, m in m_b.items():
+        xs, ys = m.nonzero()
+        for x in xs:
+            for y in ys:
+                reachable[x, y] = np.bool_(True)
+
+    zeros = None
+    while zeros is None or reachable.count_nonzero() != zeros:
+        reachable += reachable @ reachable
+        zeros = reachable.count_nonzero()
+
+    f, t = reachable.nonzero()
+    cast = lambda x: list(fa.states)[x]
+    return set(zip(list(map(cast, f)), list(map(cast, t))))
+
+
 def find_reachable(
     graph: MultiDiGraph, starts: List, re: str, *, each=True
 ) -> Union[set, List[set]]:

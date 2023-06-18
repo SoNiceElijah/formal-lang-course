@@ -83,7 +83,7 @@ class DotFormLangVisitor(FormLangVisitor):
         return self.__getNewNode(f"var [{ctx.getText()}]")
 
     def visitLambda(self, ctx):
-        return self.__run(ctx, "lambda", 1, 3)
+        return self.__run(ctx, f"lambda \\{ctx.getChild(1).getText()}", 3)
 
     def visitExpr(self, ctx):
         if ctx.getChildCount() == 1:

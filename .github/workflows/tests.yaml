@@ -64,3 +64,4 @@ jobs:
           python -m pytest tests/test_task9.py
           python -m pytest tests/test_task9.py
           python -m pytest tests/test_parser.py
+          python -m pytest tests/test_interpretator.py
